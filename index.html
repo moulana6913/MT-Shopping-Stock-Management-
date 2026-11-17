@@ -1,23 +1,1125 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="ta">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MY APK BUILDER</title><link rel="stylesheet" href="/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moulana Traders - Stock Management</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f1f5f1;
+ color:#222;
+}
+
+/* SPLASH SCREEN */
+
+#splashScreen{
+ position:fixed;
+ inset:0;
+ z-index:99999;
+ background:linear-gradient(145deg,#003c25,#007548,#003c25);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ color:white;
+ transition:opacity .6s ease,visibility .6s ease;
+}
+
+#splashScreen.hide{
+ opacity:0;
+ visibility:hidden;
+ pointer-events:none;
+}
+
+.splash-content{
+ width:90%;
+ max-width:380px;
+ padding:30px 20px;
+}
+
+.splash-logo{
+ width:125px;
+ height:125px;
+ margin:0 auto 22px;
+ border:4px solid #e8c45e;
+ border-radius:32px;
+ background:linear-gradient(145deg,#fff,#e5f2e9);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:65px;
+ box-shadow:0 0 30px #e8c45e55;
+ animation:logoPop 1s ease;
+}
+
+.splash-content h1{
+ font-size:30px;
+ margin:10px 0;
+ color:#fff;
+ letter-spacing:1px;
+}
+
+.splash-content h2{
+ font-size:19px;
+ color:#f5d46e;
+ margin:8px 0;
+}
+
+.splash-content p{
+ color:#d5eadc;
+ font-size:14px;
+ margin-top:12px;
+}
+
+.splash-line{
+ width:70px;
+ height:3px;
+ background:#e8c45e;
+ margin:22px auto;
+ border-radius:10px;
+}
+
+.loader{
+ width:155px;
+ height:5px;
+ background:#ffffff30;
+ border-radius:20px;
+ margin:25px auto 0;
+ overflow:hidden;
+}
+
+.loader span{
+ display:block;
+ height:100%;
+ width:35%;
+ background:#f5d46e;
+ border-radius:20px;
+ animation:loading 1.2s infinite ease-in-out;
+}
+
+@keyframes loading{
+ from{transform:translateX(-100%)}
+ to{transform:translateX(350%)}
+}
+
+@keyframes logoPop{
+ from{transform:scale(.5);opacity:0}
+ to{transform:scale(1);opacity:1}
+}
+
+/* MAIN APP */
+
+header{
+ background:#005536;
+ color:white;
+ text-align:center;
+ padding:25px 12px;
+}
+
+header h1{font-size:25px;margin:0}
+header p{font-size:17px;color:#c9eadb;margin:12px 0 0}
+
+.container{max-width:900px;margin:auto;padding:15px}
+
+.dashboard{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:10px;
+ margin:10px 0 25px;
+}
+
+.stat{
+ background:white;
+ padding:17px 7px;
+ text-align:center;
+ border-radius:20px;
+ box-shadow:0 3px 12px #00000010;
+}
+
+.stat strong{
+ display:block;
+ font-size:30px;
+ color:#008052;
+ margin-bottom:5px;
+}
+
+.stat span{font-size:14px;line-height:1.5}
+
+h2.section{
+ color:#005536;
+ font-size:22px;
+ margin:20px 0;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;
+}
+
+.card{
+ background:white;
+ border:1px solid #d8e5dd;
+ border-radius:18px;
+ padding:15px;
+}
+
+.category{
+ min-height:115px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ font-size:20px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+.category.active{
+ background:#005536;
+ color:white;
+}
+
+button{
+ border:0;
+ padding:12px 15px;
+ border-radius:10px;
+ background:#087b50;
+ color:white;
+ font-weight:bold;
+ font-size:14px;
+ cursor:pointer;
+}
+
+.secondary{background:#e4eee8;color:#005536}
+.danger{background:#d62828}
+.blue{background:#2563eb}
+
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin:12px 0;
+}
+
+.actions button{flex:1}
+
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ border:1px solid #ccd8d0;
+ border-radius:9px;
+ margin:6px 0 13px;
+ font-size:15px;
+ background:white;
+ color:#222;
+}
+
+label{font-weight:bold;font-size:14px}
+
+.hidden{display:none!important}
+
+.product{cursor:pointer}
+
+.product img{
+ width:100%;
+ height:125px;
+ object-fit:cover;
+ border-radius:10px;
+ background:#eee;
+}
+
+.product h3{font-size:16px;margin:10px 0 5px}
+
+.small{font-size:12px;color:#64746b}
+
+.stock{
+ color:#008052;
+ font-size:19px;
+ font-weight:bold;
+ margin-top:8px;
+}
+
+.info{
+ background:#e8f5ed;
+ padding:14px;
+ border-radius:12px;
+ margin:12px 0;
+ line-height:1.8;
+}
+
+.detail-photo{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+}
+
+.detail-photo img{
+ width:100%;
+ height:150px;
+ object-fit:cover;
+ border-radius:10px;
+}
+
+.record{
+ background:white;
+ border-left:4px solid #087b50;
+ padding:12px;
+ border-radius:9px;
+ margin:9px 0;
+ font-size:14px;
+ line-height:1.8;
+}
+
+dialog{
+ width:92%;
+ max-width:450px;
+ border:0;
+ border-radius:17px;
+ padding:20px;
+ max-height:90vh;
+ overflow:auto;
+}
+
+dialog::backdrop{background:#0008}
+
+.footer{
+ text-align:center;
+ color:#8a9b90;
+ padding:25px;
+ font-size:12px;
+}
+
+@media(max-width:380px){
+ .stat strong{font-size:24px}
+ .stat span{font-size:12px}
+ .category{font-size:17px}
+}
+</style>
 </head>
+
 <body>
-<header><div class="logo">MY <span>APK</span> BUILDER</div><small>உங்கள் சொந்த APK உருவாக்கும் தளம்</small></header>
-<main>
-<section class="hero"><p class="tag">VERSION 1.0 · HTML / ZIP</p><h1>உங்கள் Website-ஐ<br><span>Android APK</span> ஆக மாற்றுங்கள்</h1><p>HTML அல்லது ZIP project-ஐ upload செய்து APK உருவாக்குங்கள்.</p></section>
-<form id="buildForm">
-<label for="appName">App Name</label><input id="appName" name="appName" maxlength="40" value="My Web App" required>
-<label for="projectFile">HTML அல்லது ZIP கோப்பு</label>
-<input id="projectFile" name="projectFile" type="file" accept=".html,.htm,.zip" required>
-<p class="hint">ZIP கோப்புக்குள் index.html இருக்க வேண்டும்.</p>
-<button id="buildBtn" type="submit">APK உருவாக்கு</button>
-<p id="status" role="status"></p>
-</form>
-<section class="note"><b>அடுத்த கட்டங்களில்:</b> Website URL, App Icon, Splash Screen, Android Project Import.</section>
-</main>
-<footer>MY APK BUILDER · சொந்த Build Server தேவை</footer>
-<script src="/app.js"></script>
-</body></html>
+
+<!-- SPLASH SCREEN -->
+
+<div id="splashScreen">
+ <div class="splash-content">
+
+  <div class="splash-logo">🛒</div>
+
+  <h1>MOULANA</h1>
+  <h2>TRADERS</h2>
+
+  <div class="splash-line"></div>
+
+  <p>STOCK MANAGEMENT SYSTEM</p>
+
+  <p>📦 Manage Your Stock Easily</p>
+
+  <div class="loader">
+   <span></span>
+  </div>
+
+  <p style="font-size:12px">Please Wait...</p>
+
+ </div>
+</div>
+
+<header>
+ <h1>🛒 MOULANA TRADERS</h1>
+ <p>Stock Management System</p>
+</header>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+
+<div class="dashboard">
+
+ <div class="stat">
+  <strong id="totalProducts">0</strong>
+  <span>மொத்த<br>பொருட்கள்</span>
+ </div>
+
+ <div class="stat">
+  <strong id="totalStock">0</strong>
+  <span>மீதமுள்ள<br>இருப்பு</span>
+ </div>
+
+ <div class="stat">
+  <strong id="totalOut">0</strong>
+  <span>வெளியே<br>சென்றது</span>
+ </div>
+
+</div>
+
+<!-- HOME -->
+
+<div id="homeView">
+
+ <div class="actions">
+  <button onclick="openBackup()">Backup / Restore</button>
+ </div>
+
+ <h2 class="section">📦 பொருட்கள் பிரிவுகள்</h2>
+
+ <div id="categoryGrid" class="grid"></div>
+
+</div>
+
+<!-- PRODUCTS -->
+
+<div id="productView" class="hidden">
+
+ <div class="actions">
+  <button class="secondary" onclick="goHome()">← மீண்டும்</button>
+  <button onclick="openProduct()">+ புதிய பொருள்</button>
+ </div>
+
+ <h2 id="categoryTitle" class="section"></h2>
+
+ <input id="searchBox"
+ placeholder="பொருளை தேடவும்..."
+ oninput="renderProducts()">
+
+ <div id="productGrid" class="grid"></div>
+
+</div>
+
+<!-- DETAILS -->
+
+<div id="detailView" class="hidden">
+
+ <button class="secondary" onclick="backToProducts()">← மீண்டும்</button>
+
+ <div id="detailContent"></div>
+
+</div>
+
+</div>
+
+<div class="footer">
+ MOULANA TRADERS • STOCK MANAGEMENT
+</div>
+
+<!-- PRODUCT DIALOG -->
+
+<dialog id="productDialog">
+
+ <h3>புதிய பொருள் / Edit</h3>
+
+ <label>பொருள் பெயர்</label>
+ <input id="pName" placeholder="பொருள் பெயர்">
+
+ <label>பொருள் வகை</label>
+ <select id="pCategory"></select>
+
+ <label>அளவு / Unit</label>
+ <select id="pUnit">
+  <option value="Nos (எண்ணிக்கை)">Nos (எண்ணிக்கை)</option>
+  <option value="Kg (கிலோ)">Kg (கிலோ)</option>
+  <option value="Gram">Gram</option>
+  <option value="Litre">Litre</option>
+  <option value="Packet">Packet</option>
+  <option value="Box">Box</option>
+  <option value="Bag">Bag</option>
+ </select>
+
+ <div class="info">
+  <b>📸 பொருள் புகைப்படம்</b>
+ </div>
+
+ <label>முன்பக்க Photo</label>
+ <input id="pFront" type="file" accept="image/*">
+
+ <label>பின்பக்க Photo</label>
+ <input id="pBack" type="file" accept="image/*">
+
+ <div class="actions">
+  <button onclick="saveProduct()">சேமிக்கவும்</button>
+  <button class="secondary" onclick="productDialog.close()">ரத்து</button>
+ </div>
+
+</dialog>
+
+<!-- STOCK DIALOG -->
+
+<dialog id="stockDialog">
+
+ <h3>Stock பதிவு</h3>
+
+ <label>பதிவு வகை</label>
+ <select id="sType">
+  <option value="in">Stock In - வந்தது</option>
+  <option value="out">Stock Out - சென்றது</option>
+ </select>
+
+ <label>தேதி</label>
+ <input type="date" id="sDate">
+
+ <label>Quantity</label>
+ <input type="number" id="sQty" min="0.01" step="any">
+
+ <label>காரணம் / பயன்பாடு</label>
+ <textarea id="sReason" rows="3"
+ placeholder="எதற்காக வந்தது / சென்றது?"></textarea>
+
+ <div class="actions">
+  <button onclick="saveStock()">சேமிக்கவும்</button>
+  <button class="secondary" onclick="stockDialog.close()">ரத்து</button>
+ </div>
+
+</dialog>
+
+<!-- BACKUP DIALOG -->
+
+<dialog id="backupDialog">
+
+ <h3>Backup / Restore</h3>
+
+ <p>உங்கள் Stock தகவல்களை பாதுகாப்பாக JSON கோப்பாக சேமிக்கலாம்.</p>
+
+ <button class="blue" onclick="downloadBackup()">Backup Download</button>
+
+ <hr style="margin:20px 0">
+
+ <label>Backup கோப்பை தேர்வு செய்யவும்</label>
+
+ <input type="file" id="restoreFile" accept=".json,application/json">
+
+ <button onclick="restoreBackup()">Restore</button>
+
+ <button class="secondary" onclick="backupDialog.close()">மூடு</button>
+
+</dialog>
+
+<script>
+
+const STORAGE_KEY="moulana_stock_green_dashboard_model4";
+
+const categories=[
+ "அரிசி & பருப்புகள்",
+ "பால் பொருட்கள்",
+ "மசாலா & எண்ணெய்கள்",
+ "காய்கறிகள் & பழங்கள்",
+ "பிஸ்கட் & பேக்கரி",
+ "Cleaning Products",
+ "Instant Food",
+ "Chocolates & Snacks",
+ "ஊறுகாய் & சாஸ்",
+ "Soap & Toothpaste",
+ "Cool Drinks & Ice Cream",
+ "Stationery & Fancy"
+];
+
+const icons=[
+ "🌾","🥛","🛢️","🥕","🍪","🧹",
+ "🍜","🍫","🥫","🧼","🥤","📚"
+];
+
+let products=[];
+
+try{
+ products=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
+ if(!Array.isArray(products))products=[];
+}catch(e){
+ products=[];
+}
+
+let activeCategory="";
+let activeProduct=null;
+let editingId=null;
+
+const $=id=>document.getElementById(id);
+
+function saveData(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(products));
+}
+
+function makeId(){
+ return Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+}
+
+function stock(p){
+ return p.records.reduce((total,r)=>{
+  return total+(r.type==="in"?Number(r.qty):-Number(r.qty));
+ },0);
+}
+
+function formatDate(d){
+ if(!d)return "";
+ return new Date(d+"T00:00:00").toLocaleDateString("en-IN");
+}
+
+function escapeHTML(value){
+ return String(value||"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ }[c]));
+}
+
+/* DASHBOARD UPDATE */
+
+function updateDashboard(){
+
+ const totalProducts=products.length;
+
+ const totalRemaining=products.reduce((sum,p)=>{
+  return sum+stock(p);
+ },0);
+
+ const totalOut=products.reduce((sum,p)=>{
+  return sum+p.records
+   .filter(r=>r.type==="out")
+   .reduce((s,r)=>s+Number(r.qty),0);
+ },0);
+
+ $("totalProducts").textContent=totalProducts;
+ $("totalStock").textContent=Number(totalRemaining.toFixed(2));
+ $("totalOut").textContent=Number(totalOut.toFixed(2));
+}
+
+/* CATEGORY */
+
+function renderCategories(){
+
+ $("categoryGrid").innerHTML=categories.map((c,i)=>`
+  <div class="card category"
+   onclick="openCategory(${i})">
+   <div>
+    ${icons[i]}<br>
+    ${escapeHTML(c)}
+   </div>
+  </div>
+ `).join("");
+
+ updateDashboard();
+}
+
+function openCategory(index){
+
+ activeCategory=categories[index];
+
+ $("homeView").classList.add("hidden");
+ $("detailView").classList.add("hidden");
+ $("productView").classList.remove("hidden");
+
+ $("categoryTitle").textContent=
+  icons[index]+" "+activeCategory;
+
+ $("searchBox").value="";
+
+ renderProducts();
+}
+
+/* PRODUCT LIST */
+
+function renderProducts(){
+
+ const q=$("searchBox").value.toLowerCase();
+
+ const list=products.filter(p=>
+  p.category===activeCategory &&
+  p.name.toLowerCase().includes(q)
+ );
+
+ $("productGrid").innerHTML=list.length?
+ list.map(p=>`
+  <div class="card product" onclick="showDetail('${p.id}')">
+
+   ${p.front?
+    `<img src="${p.front}">`:
+    `<div style="height:125px;background:#e8eee9;border-radius:10px;display:grid;place-items:center;font-size:38px">📦</div>`
+   }
+
+   <h3>${escapeHTML(p.name)}</h3>
+   <div class="small">${escapeHTML(p.unit)}</div>
+
+   <div class="stock">${stock(p)} ${escapeHTML(p.unit)}</div>
+   <div class="small">மீதமுள்ள Stock</div>
+
+  </div>
+ `).join(""):
+ `<div class="card">பொருட்கள் எதுவும் இல்லை.</div>`;
+}
+
+function goHome(){
+
+ activeCategory="";
+ activeProduct=null;
+
+ $("productView").classList.add("hidden");
+ $("detailView").classList.add("hidden");
+ $("homeView").classList.remove("hidden");
+
+ renderCategories();
+}
+
+/* ADD / EDIT PRODUCT */
+
+function openProduct(){
+
+ editingId=null;
+
+ $("pName").value="";
+ $("pCategory").value=activeCategory;
+ $("pUnit").value="Nos (எண்ணிக்கை)";
+ $("pFront").value="";
+ $("pBack").value="";
+
+ $("productDialog").showModal();
+}
+
+function editProduct(id){
+
+ const p=products.find(x=>x.id===id);
+ if(!p)return;
+
+ editingId=id;
+
+ $("pName").value=p.name;
+ $("pCategory").value=p.category;
+ $("pUnit").value=p.unit;
+ $("pFront").value="";
+ $("pBack").value="";
+
+ $("productDialog").showModal();
+}
+
+/* PHOTO RESIZE */
+
+function resizePhoto(file){
+
+ return new Promise((resolve,reject)=>{
+
+  if(!file){
+   resolve(null);
+   return;
+  }
+
+  const reader=new FileReader();
+
+  reader.onload=e=>{
+
+   const img=new Image();
+
+   img.onload=()=>{
+
+    const canvas=document.createElement("canvas");
+    const max=800;
+
+    const scale=Math.min(
+     1,max/Math.max(img.width,img.height)
+    );
+
+    canvas.width=Math.round(img.width*scale);
+    canvas.height=Math.round(img.height*scale);
+
+    canvas.getContext("2d").drawImage(
+     img,0,0,canvas.width,canvas.height
+    );
+
+    resolve(canvas.toDataURL("image/jpeg",0.72));
+   };
+
+   img.onerror=reject;
+   img.src=e.target.result;
+  };
+
+  reader.onerror=reject;
+  reader.readAsDataURL(file);
+ });
+}
+
+async function saveProduct(){
+
+ const name=$("pName").value.trim();
+ const category=$("pCategory").value;
+ const unit=$("pUnit").value;
+
+ if(!name||!category||!unit){
+  alert("அனைத்து விவரங்களையும் நிரப்பவும்.");
+  return;
+ }
+
+ try{
+
+  const front=await resizePhoto($("pFront").files[0]);
+  const back=await resizePhoto($("pBack").files[0]);
+
+  if(editingId){
+
+   const p=products.find(x=>x.id===editingId);
+
+   p.name=name;
+   p.category=category;
+   p.unit=unit;
+
+   if(front)p.front=front;
+   if(back)p.back=back;
+
+  }else{
+
+   products.push({
+    id:makeId(),
+    name,
+    category,
+    unit,
+    front:front||"",
+    back:back||"",
+    records:[]
+   });
+  }
+
+  saveData();
+  $("productDialog").close();
+
+  renderProducts();
+  renderCategories();
+  updateDashboard();
+
+ }catch(e){
+  alert("Photo ஏற்ற முடியவில்லை. மீண்டும் முயற்சி செய்யவும்.");
+ }
+}
+
+/* PRODUCT DETAILS */
+
+function showDetail(id){
+
+ activeProduct=id;
+
+ $("productView").classList.add("hidden");
+ $("detailView").classList.remove("hidden");
+
+ renderDetail();
+}
+
+function backToProducts(){
+
+ activeProduct=null;
+
+ $("detailView").classList.add("hidden");
+ $("productView").classList.remove("hidden");
+
+ renderProducts();
+}
+
+function renderDetail(){
+
+ const p=products.find(x=>x.id===activeProduct);
+ if(!p)return;
+
+ const totalIn=p.records
+  .filter(r=>r.type==="in")
+  .reduce((s,r)=>s+Number(r.qty),0);
+
+ const totalOut=p.records
+  .filter(r=>r.type==="out")
+  .reduce((s,r)=>s+Number(r.qty),0);
+
+ $("detailContent").innerHTML=`
+
+  <h2>${escapeHTML(p.name)}</h2>
+  <div class="small">${escapeHTML(p.category)}</div>
+
+  <div class="detail-photo" style="margin-top:15px">
+
+   <div>
+    ${p.front?
+     `<img src="${p.front}">`:
+     `<div class="info">Photo இல்லை</div>`
+    }
+    <div class="small">முன்பக்கம்</div>
+   </div>
+
+   <div>
+    ${p.back?
+     `<img src="${p.back}">`:
+     `<div class="info">Photo இல்லை</div>`
+    }
+    <div class="small">பின்பக்கம்</div>
+   </div>
+
+  </div>
+
+  <div class="info">
+   <b>மொத்தம் வந்தது:</b>
+   ${totalIn} ${escapeHTML(p.unit)}<br>
+
+   <b>மொத்தம் சென்றது:</b>
+   ${totalOut} ${escapeHTML(p.unit)}<br>
+
+   <b>மீதமுள்ள இருப்பு:</b>
+   <span style="font-size:22px;color:#008052;font-weight:bold">
+    ${stock(p)} ${escapeHTML(p.unit)}
+   </span>
+  </div>
+
+  <div class="actions">
+   <button onclick="openStock('in')">+ Stock In</button>
+   <button class="danger" onclick="openStock('out')">− Stock Out</button>
+  </div>
+
+  <div class="actions">
+   <button class="secondary" onclick="editProduct('${p.id}')">Edit</button>
+   <button class="danger" onclick="deleteProduct('${p.id}')">Delete</button>
+  </div>
+
+  <h2 class="section">📋 Stock History</h2>
+  <div id="historyList"></div>
+ `;
+
+ renderHistory(p);
+}
+
+/* HISTORY */
+
+function renderHistory(p){
+
+ const list=$("historyList");
+
+ if(!p.records.length){
+  list.innerHTML='<div class="info">இதுவரை Stock பதிவு இல்லை.</div>';
+  return;
+ }
+
+ list.innerHTML=[...p.records].reverse().map(r=>`
+
+  <div class="record">
+
+   <b style="color:${r.type==="in"?"#15803d":"#dc2626"}">
+    ${r.type==="in"?"Stock In - வந்தது":"Stock Out - சென்றது"}
+   </b>
+
+   <br>
+   தேதி: ${formatDate(r.date)}
+
+   <br>
+   Quantity: ${r.qty} ${escapeHTML(p.unit)}
+
+   <br>
+   காரணம்: ${escapeHTML(r.reason||"-")}
+
+   <br>
+
+   <button class="danger"
+    style="margin-top:8px;padding:8px"
+    onclick="deleteRecord('${r.id}')">
+    பதிவை நீக்கு
+   </button>
+
+  </div>
+
+ `).join("");
+}
+
+/* STOCK IN / OUT */
+
+function openStock(type){
+
+ $("sType").value=type;
+ $("sDate").value=new Date().toISOString().slice(0,10);
+ $("sQty").value="";
+ $("sReason").value="";
+
+ $("stockDialog").showModal();
+}
+
+function saveStock(){
+
+ const p=products.find(x=>x.id===activeProduct);
+ if(!p)return;
+
+ const type=$("sType").value;
+ const date=$("sDate").value;
+ const qty=Number($("sQty").value);
+ const reason=$("sReason").value.trim();
+
+ if(!date||!Number.isFinite(qty)||qty<=0){
+  alert("சரியான தேதி மற்றும் Quantity கொடுக்கவும்.");
+  return;
+ }
+
+ if(type==="out"&&qty>stock(p)){
+  alert("கையிருப்பில் உள்ள அளவை விட அதிகமாக Stock Out செய்ய முடியாது.");
+  return;
+ }
+
+ p.records.push({
+  id:makeId(),
+  type,
+  date,
+  qty,
+  reason
+ });
+
+ saveData();
+
+ $("stockDialog").close();
+
+ renderDetail();
+ renderProducts();
+ renderCategories();
+ updateDashboard();
+}
+
+/* DELETE HISTORY */
+
+function deleteRecord(id){
+
+ if(!confirm("இந்த Stock பதிவை நீக்கவா?"))return;
+
+ const p=products.find(x=>x.id===activeProduct);
+
+ p.records=p.records.filter(r=>r.id!==id);
+
+ saveData();
+
+ renderDetail();
+ renderProducts();
+ renderCategories();
+ updateDashboard();
+}
+
+/* DELETE PRODUCT */
+
+function deleteProduct(id){
+
+ if(!confirm("இந்த பொருளையும் அதன் History-யையும் நீக்கவா?"))return;
+
+ products=products.filter(p=>p.id!==id);
+
+ saveData();
+
+ activeProduct=null;
+
+ $("detailView").classList.add("hidden");
+ $("productView").classList.remove("hidden");
+
+ renderProducts();
+ renderCategories();
+ updateDashboard();
+}
+
+/* BACKUP */
+
+function openBackup(){
+ $("backupDialog").showModal();
+}
+
+function downloadBackup(){
+
+ const data=JSON.stringify({
+  app:"Moulana Traders Stock",
+  version:1,
+  products
+ },null,2);
+
+ const blob=new Blob([data],{
+  type:"application/json"
+ });
+
+ const url=URL.createObjectURL(blob);
+
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="Moulana-Traders-Stock-Backup.json";
+ a.click();
+
+ URL.revokeObjectURL(url);
+}
+
+/* RESTORE */
+
+function restoreBackup(){
+
+ const file=$("restoreFile").files[0];
+
+ if(!file){
+  alert("முதலில் Backup கோப்பை தேர்வு செய்யவும்.");
+  return;
+ }
+
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+
+  try{
+
+   const data=JSON.parse(reader.result);
+
+   if(!Array.isArray(data.products)){
+    throw new Error();
+   }
+
+   if(!confirm("தற்போதைய தகவல்களுக்கு பதிலாக Backup தகவல்கள் வரும். தொடரவா?")){
+    return;
+   }
+
+   products=data.products.map(p=>({
+    ...p,
+    records:Array.isArray(p.records)?p.records:[]
+   }));
+
+   saveData();
+
+   $("backupDialog").close();
+
+   activeProduct=null;
+   activeCategory="";
+
+   $("productView").classList.add("hidden");
+   $("detailView").classList.add("hidden");
+   $("homeView").classList.remove("hidden");
+
+   renderCategories();
+   updateDashboard();
+
+   alert("Backup Restore செய்யப்பட்டது.");
+
+  }catch(e){
+   alert("சரியான Backup JSON கோப்பு இல்லை.");
+  }
+ };
+
+ reader.readAsText(file);
+}
+
+/* START */
+
+function setup(){
+
+ $("pCategory").innerHTML=categories.map(c=>
+  `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`
+ ).join("");
+
+ renderCategories();
+ updateDashboard();
+}
+
+/* SPLASH TIMER */
+
+window.addEventListener("load",function(){
+
+ setup();
+
+ setTimeout(function(){
+  $("splashScreen").classList.add("hide");
+ },2500);
+
+});
+
+</script>
+</body>
+</html>
+ذ
